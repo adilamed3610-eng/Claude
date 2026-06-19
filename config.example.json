@@ -1,0 +1,32 @@
+{
+  "jobSearchCriteria": {
+    "skills": ["copywriting", "content writing", "blog writing"],
+    "category": "Writing",
+    "minBudget": 100,
+    "maxBudget": 5000,
+    "limit": 20
+  },
+  "autoAcceptRules": {
+    "acceptJobs": true,
+    "minClientRating": 4.5,
+    "minPayment": 150
+  },
+  "taskInstructions": {
+    "copywriting": "Write high-quality, engaging content that matches the client's brand voice and meets all requirements. Always proofread and deliver polished work.",
+    "contentWriting": "Create well-researched, SEO-friendly content that provides value to the target audience.",
+    "blogWriting": "Write informative blog posts that are engaging, properly formatted, and include relevant keywords naturally."
+  },
+  "communicationStyle": {
+    "autoRespond": true,
+    "responseTemplates": {
+      "jobAccepted": "Thank you for considering me for this project! I'm excited to get started and will deliver high-quality work on time.",
+      "workStarted": "I've started working on your project and will keep you updated on progress.",
+      "workCompleted": "I've completed the deliverable and submitted it for your review. Please let me know if you need any revisions."
+    }
+  },
+  "logging": {
+    "enabled": true,
+    "logFile": ".job_log.json",
+    "verbosity": "info"
+  }
+}

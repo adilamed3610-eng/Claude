@@ -4,6 +4,7 @@ import { contractManager } from '../upwork/contracts.js';
 import { messageManager } from '../upwork/messages.js';
 import { upworkClient } from '../upwork/client.js';
 import { oauth } from '../auth/oauth.js';
+import { initiateAuthentication } from '../auth/callback-server.js';
 
 export const mcpTools: Tool[] = [
   {
@@ -205,12 +206,19 @@ export async function handleToolCall(toolName: string, toolInput: Record<string,
   try {
     switch (toolName) {
       case 'authenticate':
-        const authUrl = oauth.getAuthorizationUrl();
-        return JSON.stringify({
-          success: true,
-          message: 'Please visit this URL to authenticate with Upwork',
-          authUrl,
-        });
+        try {
+          await initiateAuthentication();
+          return JSON.stringify({
+            success: true,
+            message: 'Browser opened for Upwork authentication. Please log in and authorize.',
+            status: 'waiting_for_callback',
+          });
+        } catch (error) {
+          return JSON.stringify({
+            success: false,
+            error: error instanceof Error ? error.message : 'Failed to start authentication',
+          });
+        }
 
       case 'get_profile':
         const profile = await upworkClient.getProfile();

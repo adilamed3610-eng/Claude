@@ -70,51 +70,131 @@ Replace `/path/to/upwork-integration` with the actual path to this repository.
 
 ## Usage
 
+### Quick Start (CLI)
+
+Test the integration locally:
+
+```bash
+# Authenticate with Upwork
+npm run cli auth
+
+# Check your profile
+npm run cli profile
+
+# Search for jobs
+npm run cli search
+
+# View active contracts
+npm run cli contracts
+
+# See configuration
+npm run cli config
+
+# View job history
+npm run cli log
+```
+
 ### In Claude Code
 
 1. **Authenticate**
    ```
    @upwork authenticate
    ```
-   Follow the browser login prompt.
+   A browser window opens automatically. Log in to Upwork and authorize the application.
 
-2. **Search Jobs**
+2. **Search Jobs** (with defaults from config)
    ```
-   @upwork search_jobs --skills copywriting,content-writing --min_budget 100 --max_budget 5000
+   @upwork search_jobs
+   ```
+   
+   Or override with custom criteria:
+   ```
+   @upwork search_jobs --skills "copywriting,content writing" --min_budget 100 --max_budget 5000
    ```
 
-3. **Accept a Job**
+3. **Configure Search Criteria**
    ```
-   @upwork accept_job --job_id JOB123 --cover_letter "I'm interested in this project because..."
+   @upwork set_search_criteria --skills "copywriting" --min_budget 150 --max_budget 3000
    ```
 
-4. **View Active Jobs**
+4. **Enable Auto Job Acceptance**
+   ```
+   @upwork set_acceptance_rules --accept_jobs true --min_client_rating 4.5 --min_payment 200
+   ```
+
+5. **Accept a Specific Job**
+   ```
+   @upwork accept_job --job_id "JOB123" --cover_letter "I'm experienced in this area and can deliver excellent results."
+   ```
+
+6. **View Active Jobs**
    ```
    @upwork get_active_jobs
    ```
 
-5. **Send Message to Client**
+7. **Send Message to Client**
    ```
-   @upwork send_message --contract_id CONTRACT123 --message "I'm starting work on this..."
+   @upwork send_message --contract_id "CONTRACT123" --message "I've started working on your project and will have the first draft ready by Friday."
    ```
 
-6. **Submit Deliverable**
+8. **Submit Deliverable**
    ```
-   @upwork submit_deliverable --contract_id CONTRACT123 --description "Here's the completed content"
+   @upwork submit_deliverable --contract_id "CONTRACT123" --description "Completed content piece as requested" --files "https://example.com/deliverable.docx"
+   ```
+
+9. **View Job History**
+   ```
+   @upwork get_job_log
    ```
 
 ## Configuration
 
-### Job Search Criteria
+### Using config.json
 
+Copy the example and customize it:
+
+```bash
+cp config.example.json config.json
 ```
-@upwork set_search_criteria --skills copywriting,content-writing --min_budget 150 --max_budget 3000
+
+Edit `config.json` with your preferences:
+
+```json
+{
+  "jobSearchCriteria": {
+    "skills": ["copywriting", "blog writing"],
+    "category": "Writing",
+    "minBudget": 100,
+    "maxBudget": 5000,
+    "limit": 20
+  },
+  "autoAcceptRules": {
+    "acceptJobs": true,
+    "minClientRating": 4.5,
+    "minPayment": 150
+  },
+  "taskInstructions": {
+    "copywriting": "Write engaging, high-quality content that matches brand voice",
+    "blogWriting": "Create SEO-friendly blog posts with proper formatting"
+  }
+}
 ```
 
-### Acceptance Rules
+### At Runtime
 
+Set search criteria:
+```
+@upwork set_search_criteria --skills "copywriting,content-writing" --min_budget 150 --max_budget 3000
+```
+
+Configure acceptance rules:
 ```
 @upwork set_acceptance_rules --accept_jobs true --min_client_rating 4.5 --min_payment 200
+```
+
+View current settings:
+```
+npm run cli config
 ```
 
 ## Architecture
