@@ -1,6 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 import { oauth } from '../auth/oauth.js';
 import { tokenManager } from '../auth/token-manager.js';
+import { logger } from '../utils/logger.js';
+import { handleApiError } from '../utils/error-handler.js';
 
 const UPWORK_API_BASE = 'https://api.upwork.com/api';
 
@@ -33,11 +35,13 @@ export class UpworkClient {
 
   async getProfile() {
     try {
+      logger.debug('Fetching user profile');
       const response = await this.client.get('/hr/v2/users/me');
+      logger.info('Profile fetched successfully');
       return response.data;
     } catch (error) {
-      console.error('Failed to get profile:', error);
-      throw error;
+      logger.error('Failed to get profile', error);
+      throw handleApiError(error);
     }
   }
 
@@ -49,6 +53,7 @@ export class UpworkClient {
     limit?: number;
   }) {
     try {
+      logger.debug('Searching jobs', params);
       const queryParams = new URLSearchParams();
 
       if (params.skills) {
@@ -68,10 +73,11 @@ export class UpworkClient {
       }
 
       const response = await this.client.get(`/profiles/v2/search/jobs?${queryParams}`);
+      logger.info(`Found ${response.data?.jobs?.length || 0} jobs`);
       return response.data;
     } catch (error) {
-      console.error('Failed to search jobs:', error);
-      throw error;
+      logger.error('Failed to search jobs', error);
+      throw handleApiError(error);
     }
   }
 
