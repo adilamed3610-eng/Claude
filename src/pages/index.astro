@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 5);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <h1>Morocco is having a moment. Don't miss the wave.</h1>
+    <p>
+      From the Atlas Lions' historic 2022 World Cup run to co-hosting 2030, Morocco is the most-searched
+      travel destination in years — and most guides online are outdated. We track the trend in real time:
+      flight windows, host-city guides, budget breakdowns, and what to book before prices spike.
+    </p>
+  </section>
+
+  <NewsletterSignup />
+
+  <section>
+    <h2>Latest posts</h2>
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <a href={`/blog/${post.id}/`}>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.description}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a href="/blog">See all posts →</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero h1 { font-size: 2rem; margin-bottom: 0.75rem; }
+  .hero p { color: #4a443c; }
+  .post-list { list-style: none; padding: 0; }
+  .post-list li { margin-bottom: 1.5rem; }
+  .post-list a { text-decoration: none; color: inherit; }
+  .post-list h3 { margin: 0 0 0.2rem; }
+  .post-list p { margin: 0; color: #4a443c; }
+</style>

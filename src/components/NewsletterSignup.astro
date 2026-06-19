@@ -1,0 +1,58 @@
+---
+import { NEWSLETTER_FORM_ACTION } from '../consts';
+
+interface Props {
+  heading?: string;
+  subheading?: string;
+}
+
+const {
+  heading = "Join 'The Atlas Dispatch'",
+  subheading = 'One email a week: World Cup travel windows, Morocco deals, and trip tips before they trend.',
+} = Astro.props;
+---
+
+<section class="newsletter">
+  <h3>{heading}</h3>
+  <p>{subheading}</p>
+  <form action={NEWSLETTER_FORM_ACTION} method="post" target="_blank">
+    <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
+    <button type="submit">Subscribe free</button>
+  </form>
+  <small>No spam. Unsubscribe anytime.</small>
+</section>
+
+<style>
+  .newsletter {
+    background: var(--color-sand);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+  .newsletter h3 { margin: 0 0 0.4rem; }
+  .newsletter p { margin: 0 0 1rem; color: #4a443c; }
+  form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  input[type='email'] {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #d8cba9;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  button {
+    background: var(--color-terracotta);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button:hover { background: #a3431f; }
+  small { display: block; margin-top: 0.5rem; color: #8a8074; }
+</style>

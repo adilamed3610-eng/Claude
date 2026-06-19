@@ -1,0 +1,29 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+}
+
+const { title, description, pubDate, updatedDate } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <article>
+    <p class="meta">
+      {pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      {updatedDate && <> · Updated {updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</>}
+    </p>
+    <h1>{title}</h1>
+    <slot />
+  </article>
+  <NewsletterSignup />
+</BaseLayout>
+
+<style>
+  .meta { color: #8a8074; font-size: 0.9rem; margin-bottom: 0.25rem; }
+</style>

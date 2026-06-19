@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { NEWSLETTER_FORM_ACTION } from '../consts';
+---
+
+<BaseLayout
+  title="Free Morocco World Cup Trip Checklist"
+  description="Download the free 1-page checklist for planning a Morocco trip around World Cup season: visas, budget, host cities, packing."
+>
+  <h1>Free: The Morocco World Cup Trip Checklist</h1>
+  <p>
+    A one-page PDF covering visa rules, the cheapest 2-week booking window, host-city pros/cons, and a
+    packing list for matchday + medina weather swings. Drop your email and it lands in your inbox.
+  </p>
+  <ul>
+    <li>✅ Visa & entry requirements by nationality</li>
+    <li>✅ Host city comparison (Casablanca, Marrakech, Tangier, Rabat)</li>
+    <li>✅ Budget ranges: backpacker vs. comfort vs. matchday splurge</li>
+    <li>✅ Packing list for stadiums + souks</li>
+  </ul>
+
+  <form action={NEWSLETTER_FORM_ACTION} method="post" target="_blank" class="freebie-form">
+    <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
+    <button type="submit">Send me the checklist</button>
+  </form>
+  <small>
+    You'll also join the weekly newsletter. Unsubscribe anytime.
+    <!-- TODO: once the PDF exists, host it (Drive/Notion/S3) and either redirect here after signup,
+         or set it as the "welcome email" attachment in your ESP. -->
+  </small>
+</BaseLayout>
+
+<style>
+  .freebie-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0 0.5rem;
+  }
+  input[type='email'] {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #d8cba9;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  button {
+    background: var(--color-mint);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+</style>
