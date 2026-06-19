@@ -5,6 +5,8 @@ import { messageManager } from '../upwork/messages.js';
 import { upworkClient } from '../upwork/client.js';
 import { oauth } from '../auth/oauth.js';
 import { initiateAuthentication } from '../auth/callback-server.js';
+import { jobMatcher } from '../upwork/job-matcher.js';
+import { proposalGenerator } from '../upwork/proposal-generator.js';
 
 export const mcpTools: Tool[] = [
   {
@@ -200,6 +202,61 @@ export const mcpTools: Tool[] = [
       required: ['contract_id', 'description'],
     },
   },
+  {
+    name: 'match_jobs',
+    description: 'Analyze a list of jobs and score them based on your profile match',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        jobs: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              title: { type: 'string' },
+              description: { type: 'string' },
+              budget: { type: 'number' },
+              requiredSkills: { type: 'array', items: { type: 'string' } },
+            },
+          },
+          description: 'Array of jobs to match against your profile',
+        },
+      },
+      required: ['jobs'],
+    },
+  },
+  {
+    name: 'generate_proposal',
+    description: 'Generate an intelligent cover letter for a job',
+    inputSchema: {
+      type: 'object' as const,
+      properties: {
+        job_id: {
+          type: 'string',
+          description: 'The job ID',
+        },
+        job_title: {
+          type: 'string',
+          description: 'The job title',
+        },
+        job_description: {
+          type: 'string',
+          description: 'The job description',
+        },
+        required_skills: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Required skills for the job',
+        },
+        client_name: {
+          type: 'string',
+          description: 'Client name (optional)',
+        },
+      },
+      required: ['job_title', 'job_description'],
+    },
+  },
 ];
 
 export async function handleToolCall(toolName: string, toolInput: Record<string, unknown>): Promise<string> {
@@ -296,6 +353,27 @@ export async function handleToolCall(toolName: string, toolInput: Record<string,
         return JSON.stringify({
           success: submitted,
           message: submitted ? 'Deliverable submitted successfully' : 'Failed to submit deliverable',
+        });
+
+      case 'match_jobs':
+        const jobsToMatch = toolInput.jobs as any[];
+        const matches = jobMatcher.matchJobs(jobsToMatch);
+        return JSON.stringify({
+          success: true,
+          matches: matches.sort((a, b) => b.totalScore - a.totalScore),
+        });
+
+      case 'generate_proposal':
+        const proposal = proposalGenerator.generateProposal({
+          jobTitle: toolInput.job_title as string,
+          jobDescription: toolInput.job_description as string,
+          requiredSkills: toolInput.required_skills as string[] | undefined,
+          clientName: toolInput.client_name as string | undefined,
+        });
+        return JSON.stringify({
+          success: true,
+          proposal,
+          jobId: toolInput.job_id,
         });
 
       default:
